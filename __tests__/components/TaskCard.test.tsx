@@ -4,7 +4,7 @@ import { TaskCard } from '../../src/components/TaskCard';
 
 const mockTask = {
   id: '1',
-  title: 'Estudiar React Native',
+  title: 'Estudiar React Native con Testing Library',
   status: 'pending' as const,
 };
 
@@ -17,7 +17,7 @@ describe('TaskCard', () => {
 
   it('muestra el título de la tarea', async () => {
     await render(<TaskCard task={mockTask} onDelete={mockOnDelete} />);
-    expect(screen.getByText('Estudiar React Native')).toBeTruthy();
+    expect(screen.getByText('Estudiar React Native con Testing Library')).toBeTruthy();
   });
 
   it('muestra el estado "Pendiente" para tareas pendientes', async () => {
