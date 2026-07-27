@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TaskForm } from '../components/TaskForm';
+import { TaskList } from '../components/TaskList';
+import { ConfirmDeleteDialog } from '../components/ConfirmDeleteDialog';
 import { useCreateTask } from '../hooks/useCreateTask';
 
 export function CreateTaskScreen() {
-  const { status, submit } = useCreateTask();
+  const { status, tasks, submit, removeTask } = useCreateTask();
   const insets = useSafeAreaInsets();
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+
+  const pendingTask = tasks.find((t) => t.id === pendingDelete);
 
   return (
     <View
@@ -25,6 +30,16 @@ export function CreateTaskScreen() {
           Error al crear la tarea
         </Text>
       )}
+      <TaskList tasks={tasks} onDelete={setPendingDelete} />
+      <ConfirmDeleteDialog
+        visible={pendingDelete !== null}
+        taskTitle={pendingTask?.title}
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={() => {
+          if (pendingDelete) removeTask(pendingDelete);
+          setPendingDelete(null);
+        }}
+      />
     </View>
   );
 }
