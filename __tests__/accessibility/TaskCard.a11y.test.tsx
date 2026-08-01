@@ -8,6 +8,8 @@ const mockTask = {
   status: 'pending' as const,
 };
 
+// En este archivo onDelete se mockea inline con jest.fn() en cada test:
+// no importa qué hace el padre, solo que TaskCard sea accesible.
 describe('TaskCard - Accesibilidad', () => {
   it('el botón de eliminar tiene un accessibilityLabel descriptivo', async () => {
     await render(<TaskCard task={mockTask} onDelete={jest.fn()} />);

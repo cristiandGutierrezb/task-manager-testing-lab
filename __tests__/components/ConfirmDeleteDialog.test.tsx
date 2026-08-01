@@ -19,7 +19,16 @@ describe('ConfirmDeleteDialog', () => {
     expect(screen.getByText(`¿Seguro que quieres eliminar "Cocinar"? Esta acción no se puede deshacer.`)).toBeTruthy();
   });
 
+  it('no renderiza el contenido del diálogo cuando visible es false', async () => {
+    await render(
+      <ConfirmDeleteDialog visible={false} taskTitle="Estudiar" onConfirm={noop} onCancel={noop} />
+    );
+    expect(screen.queryByText('Eliminar tarea')).toBeNull();
+  });
+
   it('llama a onConfirm al presionar "Eliminar"', async () => {
+    // Se aísla onConfirm: el diálogo solo debe avisar que se confirmó,
+    // la lógica real de borrado no le compete a este componente.
     const onConfirm = jest.fn();
     await render(
       <ConfirmDeleteDialog visible taskTitle="Estudiar" onConfirm={onConfirm} onCancel={noop} />

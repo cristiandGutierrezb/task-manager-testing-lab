@@ -25,6 +25,11 @@ describe('filterTasksByStatus', () => {
     expect(result).toHaveLength(4);
   });
 
+  it('el arreglo filtrado contiene la tarea esperada', () => {
+    const result = filterTasksByStatus(mockTasks, 'pending');
+    expect(result).toContain(mockTasks[0]);
+  });
+
   it('lanza un error cuando el estado es inválido', () => {
     // @ts-expect-error probando entrada inválida en runtime
     expect(() => filterTasksByStatus(mockTasks, 'invalido')).toThrow();

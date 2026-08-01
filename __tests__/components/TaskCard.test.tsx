@@ -8,6 +8,8 @@ const mockTask = {
   status: 'pending' as const,
 };
 
+// Se aísla onDelete: TaskCard solo debe notificar el id a eliminar,
+// no probamos aquí qué hace el padre con esa notificación.
 const mockOnDelete = jest.fn();
 
 describe('TaskCard', () => {
