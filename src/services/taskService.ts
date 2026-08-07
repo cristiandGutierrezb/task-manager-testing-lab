@@ -2,14 +2,52 @@ import { Task } from '../types';
 
 const API_URL = 'https://api.taskmanager.com';
 
-export async function fetchTasks(): Promise<Task[]> {
-  const res = await fetch(`${API_URL}/tasks`);
-  if (!res.ok) throw new Error('Error al obtener las tareas');
-  return res.json();
+interface BugData {
+  title: string;
+  module: string;
+  priority: 'low' | 'medium' | 'high';
+  description: string;
+  expectedResult: string;
+  actualResult: string;
 }
 
-export async function createTask(title: string): Promise<Task> {
-  // ponytail: sin backend real, la tarea se crea localmente.
-  // Reemplazar por un fetch cuando exista una API.
-  return { id: Date.now().toString(), title, status: 'pending' };
+let localTasks: Task[] = [];
+
+export async function fetchTasks(): Promise<Task[]> {
+  return localTasks;
+}
+
+export async function createBug(data: BugData): Promise<Task> {
+  // Durante las pruebas Jest se utiliza MSW
+  if (process.env.NODE_ENV === 'test') {
+    const res = await fetch(`${API_URL}/bugs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      throw new Error('Error al registrar el bug');
+    }
+
+    return res.json();
+  }
+
+  // En Expo se registra localmente porque no existe una API real
+  const bug: Task = {
+    id: Date.now().toString(),
+    title: data.title,
+    module: data.module,
+    priority: data.priority,
+    description: data.description,
+    expectedResult: data.expectedResult,
+    actualResult: data.actualResult,
+    status: 'pending',
+  };
+
+  localTasks = [bug, ...localTasks];
+
+  return bug;
 }

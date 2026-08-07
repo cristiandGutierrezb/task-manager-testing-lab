@@ -1,0 +1,46 @@
+appId: host.exp.exponent
+
+---
+
+# Verificamos que la pantalla de reporte de bugs esté visible
+- assertVisible: "Reportar Bug"
+
+# Seleccionamos el campo título
+- tapOn:
+    id: "input-titulo"
+
+# Borramos cualquier información anterior
+- eraseText
+
+# Ingresamos el título del bug
+- inputText: "Error en Login"
+
+# Seleccionamos el campo módulo
+- tapOn: "Módulo"
+
+# Ingresamos el módulo afectado
+- inputText: "Login"
+
+# Seleccionamos prioridad alta
+- tapOn: "Alta"
+
+# Ingresamos la descripción del problema
+- tapOn: "Descripción del problema"
+- inputText: "El usuario no puede iniciar sesion"
+
+# Ingresamos el resultado esperado
+- tapOn: "Resultado esperado"
+- inputText: "El usuario debe ingresar correctamente"
+
+# Ingresamos el resultado obtenido
+- tapOn: "Resultado obtenido"
+- inputText: "El sistema muestra un error"
+
+# Guardamos el bug
+- tapOn: "Guardar bug"
+
+# Verificamos el mensaje exitoso
+- assertVisible: "Bug registrado exitosamente"
+
+# Verificamos que el bug aparezca en la lista
+- assertVisible: "Error en Login"

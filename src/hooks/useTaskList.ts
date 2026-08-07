@@ -10,20 +10,39 @@ export function useTaskList(initialTasks: Task[] = []) {
       setError('El título no puede estar vacío');
       return;
     }
+
     setError(null);
+
     const newTask: Task = {
       id: Date.now().toString(),
       title: title.trim(),
+
+      // Datos adicionales incluidos en la nueva estructura del reporte
+      module: '',
+      priority: 'medium',
+      description: '',
+      expectedResult: '',
+      actualResult: '',
+
       status: 'pending',
     };
+
     setTasks((prev) => [...prev, newTask]);
   };
 
   const removeTask = (id: string) => {
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+    setTasks((prev) =>
+      prev.filter((task) => task.id !== id)
+    );
   };
 
   const taskCount = tasks.length;
 
-  return { tasks, error, addTask, removeTask, taskCount };
+  return {
+    tasks,
+    error,
+    addTask,
+    removeTask,
+    taskCount,
+  };
 }
