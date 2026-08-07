@@ -43,3 +43,7 @@ yarn-error.*
 # Evidencia de Maestro (videos generados localmente para el .zip de entrega,
 # no se versionan porque pesan demasiado y superan el límite de GitHub)
 .maestro/evidencia/
+
+# Reporte de cobertura de Jest: 100% generado y reproducible con
+# `npx jest --coverage`, no debería vivir en el historial de git.
+coverage/
