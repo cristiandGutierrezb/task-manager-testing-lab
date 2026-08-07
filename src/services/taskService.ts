@@ -13,3 +13,8 @@ export async function createTask(title: string): Promise<Task> {
   // Reemplazar por un fetch cuando exista una API.
   return { id: Date.now().toString(), title, status: 'pending' };
 }
+
+export async function deleteTask(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/tasks/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Error al eliminar la tarea');
+}

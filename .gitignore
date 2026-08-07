@@ -39,3 +39,7 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Evidencia de Maestro (videos generados localmente para el .zip de entrega,
+# no se versionan porque pesan demasiado y superan el límite de GitHub)
+.maestro/evidencia/

@@ -27,4 +27,10 @@ describe('TaskCard - Accesibilidad', () => {
     await render(<TaskCard task={mockTask} onDelete={jest.fn()} />);
     expect(screen.getByText('○ Pendiente')).toBeTruthy();
   });
+
+  it('el botón de eliminar expone accessibilityLabel como prop (jest-native)', async () => {
+    await render(<TaskCard task={mockTask} onDelete={jest.fn()} />);
+    const deleteButton = screen.getByLabelText('Eliminar tarea Estudiar accesibilidad');
+    expect(deleteButton).toHaveProp('accessibilityLabel', 'Eliminar tarea Estudiar accesibilidad');
+  });
 });

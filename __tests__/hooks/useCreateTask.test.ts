@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-native';
 import { useCreateTask } from '../../src/hooks/useCreateTask';
-import { createTask } from '../../src/services/taskService';
+import { createTask, deleteTask, fetchTasks } from '../../src/services/taskService';
 
 // Se mockea taskService para aislar el hook de la implementación real del
 // servicio: hoy createTask nunca falla (crea la tarea localmente), y sin
@@ -8,10 +8,18 @@ import { createTask } from '../../src/services/taskService';
 jest.mock('../../src/services/taskService');
 
 const mockedCreateTask = createTask as jest.MockedFunction<typeof createTask>;
+const mockedFetchTasks = fetchTasks as jest.MockedFunction<typeof fetchTasks>;
+const mockedDeleteTask = deleteTask as jest.MockedFunction<typeof deleteTask>;
 
 describe('useCreateTask', () => {
   beforeEach(() => {
     mockedCreateTask.mockReset();
+    // El hook llama a fetchTasks() al montar; se resuelve vacío por defecto
+    // porque estos tests se enfocan en el flujo de submit/removeTask, no en
+    // la carga inicial (esa se cubre en las pruebas de integración).
+    mockedFetchTasks.mockReset().mockResolvedValue([]);
+    // removeTask ahora llama a deleteTask(); se resuelve bien por defecto.
+    mockedDeleteTask.mockReset().mockResolvedValue(undefined);
   });
 
   it('inicia con status "idle" y sin tareas', async () => {
@@ -54,9 +62,26 @@ describe('useCreateTask', () => {
       await result.current.submit('Comprar leche');
     });
     await act(async () => {
-      result.current.removeTask('1');
+      await result.current.removeTask('1');
     });
 
     expect(result.current.tasks).toEqual([]);
+  });
+
+  it('conserva la tarea y expone un error cuando deleteTask falla', async () => {
+    const tarea = { id: '1', title: 'Comprar leche', status: 'pending' as const };
+    mockedCreateTask.mockResolvedValueOnce(tarea);
+    mockedDeleteTask.mockRejectedValueOnce(new Error('fallo de red'));
+    const { result } = await renderHook(() => useCreateTask());
+
+    await act(async () => {
+      await result.current.submit('Comprar leche');
+    });
+    await act(async () => {
+      await result.current.removeTask('1');
+    });
+
+    expect(result.current.tasks).toEqual([tarea]);
+    expect(result.current.deleteError).toBe('No se pudo eliminar la tarea');
   });
 });

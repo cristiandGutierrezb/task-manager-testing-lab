@@ -1,0 +1,49 @@
+appId: com.taskmanager.app
+---
+# Flujo propio (Actividad 3): crear varias tareas seguidas y verificar que
+# todas queden visibles, que el contador se actualice, y que la más reciente
+# aparezca primero en la lista (la app agrega tareas nuevas al inicio, no al
+# final — ver src/hooks/useCreateTask.ts, setTasks(prev => [task, ...prev])).
+#
+# Nota: TaskForm no limpia el campo de texto después de guardar, así que hay
+# que borrarlo con eraseText antes de escribir el siguiente título.
+
+- launchApp
+- assertVisible: "Nueva tarea"
+
+# 1. Primera tarea
+- tapOn:
+    id: "input-titulo"
+- inputText: "Preparar presentación"
+- tapOn: "Guardar"
+- assertVisible: "Preparar presentación"
+
+# 2. Segunda tarea (borrar el campo primero)
+- tapOn:
+    id: "input-titulo"
+- eraseText: 60
+- inputText: "Revisar correo"
+- tapOn: "Guardar"
+- assertVisible: "Revisar correo"
+
+# 3. Tercera tarea
+- tapOn:
+    id: "input-titulo"
+- eraseText: 60
+- inputText: "Llamar al cliente"
+- tapOn: "Guardar"
+- assertVisible: "Llamar al cliente"
+
+# 4. Las 3 deben seguir visibles y el contador debe reflejarlo
+- assertVisible: "Preparar presentación"
+- assertVisible: "Revisar correo"
+- assertVisible: "Llamar al cliente"
+- assertVisible: "3 tareas"
+
+# 5. La más reciente debe aparecer primero en la lista
+- assertVisible:
+    text: "Llamar al cliente"
+    above: "Revisar correo"
+- assertVisible:
+    text: "Revisar correo"
+    above: "Preparar presentación"

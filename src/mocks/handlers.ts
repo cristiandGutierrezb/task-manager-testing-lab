@@ -17,4 +17,10 @@ export const handlers = [
       { id: '2', title: 'Otra tarea', status: 'completed' },
     ]);
   }),
+
+  // Handler nuevo (Actividad 3): antes removeTask era 100% local, nunca
+  // llegaba a la red. Este endpoint simula el borrado real en el backend.
+  http.delete(`${API_URL}/tasks/:id`, () => {
+    return new HttpResponse(null, { status: 204 });
+  }),
 ];

@@ -1,0 +1,40 @@
+appId: com.taskmanager.app
+---
+# Flujo propio (Actividad 3): crear una tarea e intentar eliminarla usando el
+# diálogo de confirmación (ConfirmDeleteDialog). Ningún flujo anterior probaba
+# esta parte de la app — solo cubrían la creación de tareas.
+#
+# Nota importante: removeTask ahora llama de verdad a deleteTask() (nuevo
+# endpoint DELETE /tasks/:id). En los tests de Jest ese endpoint está mockeado
+# con MSW y responde 204, pero en este emulador real NO hay backend — el
+# fetch le pega a un dominio que no existe y siempre falla. Por eso este
+# flujo verifica el camino de error real (aparece el mensaje y la tarea se
+# conserva), no que la tarea desaparezca — eso sí se prueba en Jest, donde
+# se controla la respuesta del servidor.
+
+- launchApp
+- assertVisible: "Nueva tarea"
+
+# 1. Crear una tarea para después eliminarla
+- tapOn:
+    id: "input-titulo"
+- inputText: "Tarea temporal para eliminar"
+- tapOn: "Guardar"
+- assertVisible: "Tarea temporal para eliminar"
+- hideKeyboard
+
+# 2. Tocar "Eliminar" en la tarjeta abre el diálogo de confirmación
+- tapOn: "Eliminar"
+- assertVisible: "Eliminar tarea"
+- assertVisible: "¿Seguro que quieres eliminar \"Tarea temporal para eliminar\"? Esta acción no se puede deshacer."
+
+# 3. Cancelar no debe borrar la tarea
+- tapOn: "Cancelar"
+- assertNotVisible: "Eliminar tarea"
+- assertVisible: "Tarea temporal para eliminar"
+
+# 4. Repetir y esta vez confirmar: sin backend real, la API de borrado falla
+- tapOn: "Eliminar"
+- tapOn: "Confirmar eliminación"
+- assertVisible: "No se pudo eliminar la tarea"
+- assertVisible: "Tarea temporal para eliminar"
