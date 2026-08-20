@@ -1,4 +1,4 @@
-import { TaskSchema, TaskListSchema } from '../../src/schemas/taskSchema';
+import { TaskSchema, TaskListSchema, DeleteTaskErrorSchema } from '../../src/schemas/taskSchema';
 
 describe('API Contract - Tasks', () => {
   it('la respuesta de GET /tasks cumple con el esquema esperado', () => {
@@ -25,6 +25,20 @@ describe('API Contract - Tasks', () => {
   it('detecta cuando la API envía un status inválido', () => {
     const invalidStatus = { id: '1', title: 'Test', status: 'archived' };
     const result = TaskSchema.safeParse(invalidStatus);
+    expect(result.success).toBe(false);
+  });
+
+  it('el cuerpo de error de DELETE /tasks/:id cumple con el esquema esperado', () => {
+    // DELETE /tasks/:id responde 204 sin cuerpo en éxito; el contrato con
+    // campos y tipos reales está en la respuesta de error (Actividad 4).
+    const errorResponse = { error: 'No se pudo eliminar la tarea' };
+    const result = DeleteTaskErrorSchema.safeParse(errorResponse);
+    expect(result.success).toBe(true);
+  });
+
+  it('detecta cuando el error de DELETE /tasks/:id no tiene el campo error', () => {
+    const invalidError = { message: 'No se pudo eliminar la tarea' };
+    const result = DeleteTaskErrorSchema.safeParse(invalidError);
     expect(result.success).toBe(false);
   });
 });
